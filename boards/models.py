@@ -25,7 +25,7 @@ class Column(models.Model):
         ordering = ('order',)
 
 class Task(models.Model):
-    class Priority(models.IntegerChoices):
+    class Priority(models.TextChoices):
         LOW = "low", "Low"
         MEDIUM = "medium", "Medium"
         HIGH = "high", "High"
@@ -33,7 +33,13 @@ class Task(models.Model):
     column = models.ForeignKey(Column, on_delete=models.CASCADE, related_name='tasks')
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=200, null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='created_tasks')
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_tasks",
+    )
     assignee = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assigned_tasks',null=True,blank=True)
     priority = models.CharField(
         max_length=10,
