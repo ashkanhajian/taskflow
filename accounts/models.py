@@ -6,4 +6,8 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    username=models.CharField(max_length=30,unique=True)
+    id=models.AutoField(primary_key=True)
+    email=models.EmailField(unique=True)
+    first_name=models.CharField(max_length=30)
+    last_name=models.CharField(max_length=30)
