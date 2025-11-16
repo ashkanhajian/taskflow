@@ -1,3 +1,49 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from projects.models import Project
 
 # Create your models here.
+User = get_user_model()
+
+class Board(models.Model):
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='boards')
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=200)
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.name} ({self.project.name})"
+
+class Column(models.Model):
+    board  = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='columns')
+    name = models.CharField(max_length=100)
+    order = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return f"{self.name} ({self.board.name})"
+
+    class Meta:
+        ordering = ('order',)
+
+class Task(models.Model):
+    class Priority(models.IntegerChoices):
+        LOW = "low", "Low"
+        MEDIUM = "medium", "Medium"
+        HIGH = "high", "High"
+
+    column = models.ForeignKey(Column, on_delete=models.CASCADE, related_name='tasks')
+    title = models.CharField(max_length=100)
+    description = models.TextField(max_length=200, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='created_tasks')
+    assignee = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assigned_tasks',null=True,blank=True)
+    priority = models.CharField(
+        max_length=10,
+        choices=Priority.choices,
+        default=Priority.MEDIUM,
+    )
+    due_date = models.DateTimeField(null=True, blank=True)
+    is_complete = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.column.name})"
