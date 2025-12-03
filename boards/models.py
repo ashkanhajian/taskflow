@@ -18,6 +18,7 @@ class Column(models.Model):
     board  = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='columns')
     name = models.CharField(max_length=100)
     order = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return f"{self.name} ({self.board.name})"
 
@@ -50,6 +51,7 @@ class Task(models.Model):
     is_complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    order = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.title} ({self.column.name})"

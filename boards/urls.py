@@ -9,6 +9,8 @@ from .views import (
     TaskDetailView,
     TaskCommentListCreateView,
     TaskCommentDetailView,
+    ColumnReorderView,
+    TaskReorderView,
 )
 
 urlpatterns = [
@@ -29,6 +31,16 @@ urlpatterns = [
         "tasks/<int:task_id>/comments/<int:pk>/",
         TaskCommentDetailView.as_view(),
         name="task-comment-detail",
+    ),
+    path(
+        "boards/<int:board_id>/columns/reorder/",
+        ColumnReorderView.as_view(),
+        name="column-reorder",
+    ),
+    path(
+        "columns/<int:column_id>/tasks/reorder/",
+        TaskReorderView.as_view(),
+        name="task-reorder",
     ),
 
 ]

@@ -37,7 +37,7 @@ class BoardSerializer(serializers.ModelSerializer):
 class ColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Column
-        fields = ['id','board','name','order']
+        fields = "__all__"
         read_only_fields = ['id']
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -56,6 +56,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "priority",
             "due_date",
             "is_completed",
+            "order",
             "created_at",
             "updated_at",
         ]

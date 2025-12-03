@@ -23,3 +23,24 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_members(self, obj):
         memberships = obj.members.select_related('user')
         return ProjectsMemberSerializer(memberships, many=True).data
+
+
+class ProjectMemberWriteSerializer(serializers.ModelSerializer):
+
+    username = serializers.CharField(write_only=True)
+    role = serializers.ChoiceField(choices=ProjectsMember.Role.choices)
+
+    class Meta:
+        model = ProjectsMember
+        fields = ("id", "username", "role", "project", "joined_at")
+        read_only_fields = ("id", "project", "joined_at")
+
+    def validate(self, attrs):
+        username = attrs.get("username")
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"username": "کاربری با این نام پیدا نشد."})
+
+        attrs["user"] = user
+        return attrs
