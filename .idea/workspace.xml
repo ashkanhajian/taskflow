@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e8b841d0-b333-4066-8a33-dc0ebd0a4809" name="Changes" comment="start">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,6 +108,7 @@
       <workItem from="1763292990512" duration="2946000" />
       <workItem from="1763510017861" duration="4326000" />
       <workItem from="1764584517412" duration="1310000" />
+      <workItem from="1764780254592" duration="1929000" />
     </task>
     <task id="LOCAL‎−۰۰۰۰۱" summary="start">
       <option name="closed" value="true" />
@@ -163,7 +166,14 @@
       <option name="presentableId" value="LOCAL‎−۰۰۰۰۸" />
       <updated>1763511739816</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL‎−۰۰۰۰۹" summary="start">
+      <option name="closed" value="true" />
+      <created>1764780557822</created>
+      <option name="number" value="LOCAL‎−۰۰۰۰۹" />
+      <option name="presentableId" value="LOCAL‎−۰۰۰۰۹" />
+      <updated>1764780557822</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
