@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from accounts.serializers import UserSerializer
-from .models import Board, Column, Task
+from .models import Board, Column, Task, TaskComment
 from projects.models import Project, ProjectsMember
 
 User = get_user_model()
@@ -60,3 +60,18 @@ class TaskSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["id", "created_by", "created_at", "updated_at"]
+
+class TaskCommentSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source="author.username")
+
+    class Meta:
+        model = TaskComment
+        fields = [
+            "id",
+            "task",
+            "author",
+            "content",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "author", "created_at", "updated_at", "task"]

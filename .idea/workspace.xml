@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e8b841d0-b333-4066-8a33-dc0ebd0a4809" name="Changes" comment="start">
-      <change afterPath="$PROJECT_DIR$/boards/serializers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/boards/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boards/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/boards/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskflow/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskflow/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +105,7 @@
       <workItem from="1763255532691" duration="2078000" />
       <workItem from="1763292990512" duration="2946000" />
       <workItem from="1763510017861" duration="4326000" />
+      <workItem from="1764584517412" duration="1310000" />
     </task>
     <task id="LOCAL‎−۰۰۰۰۱" summary="start">
       <option name="closed" value="true" />

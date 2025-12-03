@@ -1,10 +1,10 @@
 from django.db.models import Q
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
-
+from django.shortcuts import get_object_or_404
 import projects
-from .models import Board, Column, Task
-from .serializers import BoardSerializer, ColumnSerializer, TaskSerializer
+from .models import Board, Column, Task, TaskComment
+from .serializers import BoardSerializer, ColumnSerializer, TaskSerializer, TaskCommentSerializer
 from projects.models import Project, ProjectsMember
 from django.contrib.auth import get_user_model
 
@@ -97,3 +97,56 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         projects = user_projects_queryset(user)
         return Task.objects.filter(column__board__project__in=projects)
+
+class TaskCommentListCreateView(generics.ListCreateAPIView):
+    serializer_class = TaskCommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        task_id = self.kwargs["task_id"]
+        projects = user_projects_queryset(user)
+        qs = TaskComment.objects.select_related(
+            "author",
+            "task__column__board__project",
+        ).filter(task_id=task_id)
+        # فقط اعضای پروژه مربوط اجازه دسترسی دارن
+        return qs.filter(task__column__board__project__in=projects)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        task_id = self.kwargs["task_id"]
+        task = get_object_or_404(
+            Task.objects.select_related("column__board__project"),
+            id=task_id,
+        )
+        projects = user_projects_queryset(user)
+        if task.column.board.project not in projects:
+            raise PermissionDenied("شما به این تسک دسترسی ندارید.")
+        serializer.save(author=user, task=task)
+
+
+class TaskCommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TaskCommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        task_id = self.kwargs["task_id"]
+        projects = user_projects_queryset(user)
+        qs = TaskComment.objects.select_related(
+            "author",
+            "task__column__board__project",
+        ).filter(task_id=task_id)
+        return qs.filter(task__column__board__project__in=projects)
+
+    def perform_update(self, serializer):
+        comment = self.get_object()
+        if comment.author != self.request.user:
+            raise PermissionDenied("فقط نویسنده کامنت می‌تواند آن را ویرایش کند.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.author != self.request.user:
+            raise PermissionDenied("فقط نویسنده کامنت می‌تواند آن را حذف کند.")
+        instance.delete()
