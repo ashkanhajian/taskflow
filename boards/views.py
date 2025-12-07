@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import projects
-from .models import Board, Column, Task, TaskComment
-from .serializers import BoardSerializer, ColumnSerializer, TaskSerializer, TaskCommentSerializer
+from . import models
+from .models import Board, Column, Task, TaskComment, Label
+from .serializers import BoardSerializer, ColumnSerializer, TaskSerializer, TaskCommentSerializer,LabelSerializer
 from projects.models import Project, ProjectsMember
 from django.contrib.auth import get_user_model
 
@@ -247,3 +248,57 @@ class TaskReorderView(APIView):
             many=True,
         )
         return Response(serialized.data, status=status.HTTP_200_OK)
+
+class LabelListCreateView(generics.ListCreateAPIView):
+    serializer_class = LabelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = Label.objects.select_related("project")
+
+        project_id = self.request.query_params.get("project")
+        if project_id:
+            qs = qs.filter(project_id=project_id)
+
+        # فقط لیبل‌هایی از پروژه‌هایی که کاربر توش عضوه:
+        # (مثل بقیه‌جاها، owner یا member) :contentReference[oaicite:12]{index=12}
+        allowed_projects = Project.objects.filter(
+                models.Q(owner=user) |
+            models.Q(membership__user=user)
+        ).distinct()
+        return qs.filter(project__in=allowed_projects)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        project_id = self.request.data.get("project")
+
+        if not project_id:
+            raise PermissionDenied("فیلد project الزامی است.")
+
+        project = get_object_or_404(Project, id=project_id)
+        _ensure_user_in_project(user, project)
+
+        serializer.save(project=project)
+
+class LabelDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LabelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        allowed_projects = Project.objects.filter(
+            models.Q(owner=user) |
+            models.Q(membership__user=user)
+        ).distinct()
+        return Label.objects.filter(project__in=allowed_projects)
+
+    def perform_update(self, serializer):
+        label = self.get_object()
+        _ensure_user_in_project(self.request.user, label.project)
+        serializer.save(project=label.project)
+
+    def perform_destroy(self, instance):
+        _ensure_user_in_project(self.request.user, instance.project)
+        instance.delete()

@@ -25,6 +25,27 @@ class Column(models.Model):
     class Meta:
         ordering = ('order',)
 
+class Label(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="labels",
+    )
+    name = models.CharField(max_length=50)
+    color = models.CharField(
+        max_length=7,
+        default="#cccccc",  # مثل "#FF0000"
+        help_text="رنگ به فرمت HEX، مثل #FF0000",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("project", "name")
+
+    def __str__(self):
+        return f"{self.name} ({self.project.name})"
+
+
 class Task(models.Model):
     class Priority(models.TextChoices):
         LOW = "low", "Low"
@@ -52,6 +73,12 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     order = models.PositiveIntegerField(default=0)
+
+    labels = models.ManyToManyField(
+        Label,
+        related_name="tasks",
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.title} ({self.column.name})"

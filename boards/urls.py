@@ -11,6 +11,8 @@ from .views import (
     TaskCommentDetailView,
     ColumnReorderView,
     TaskReorderView,
+    LabelListCreateView,
+    LabelDetailView,
 )
 
 urlpatterns = [
@@ -42,5 +44,6 @@ urlpatterns = [
         TaskReorderView.as_view(),
         name="task-reorder",
     ),
-
+    path("labels/", LabelListCreateView.as_view(), name="label-list-create"),
+    path("labels/<int:pk>/", LabelDetailView.as_view(), name="label-detail"),
 ]

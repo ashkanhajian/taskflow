@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from accounts.serializers import UserSerializer
-from .models import Board, Column, Task, TaskComment
+from .models import Board, Column, Task, TaskComment, Label
 from projects.models import Project, ProjectsMember
 
 User = get_user_model()
@@ -33,6 +33,11 @@ class BoardSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("شما عضو این پروژه نیستید.")
 
         return value
+class LabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Label
+        fields = ["id", "project", "name", "color", "created_at"]
+        read_only_fields = ["id", "created_at"]
 
 class ColumnSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,7 +60,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "assignee",
             "priority",
             "due_date",
-            "is_completed",
+            "labels",
+            "is_complete",
             "order",
             "created_at",
             "updated_at",
@@ -76,3 +82,32 @@ class TaskCommentSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["id", "author", "created_at", "updated_at", "task"]
+
+    def validate_labels(self, value):
+        """
+
+        """
+        column_id = self.initial_data.get("column")
+        project = None
+
+        from .models import Column
+
+        if column_id:
+            try:
+                column = Column.objects.select_related("board").get(pk=column_id)
+                project = column.board
+            except Column.DoesNotExist:
+                raise serializers.ValidationError("ستون نامعتبر است.")
+        elif self.instance:
+
+            project = self.instance.column.board
+
+        if project is None:
+            return value
+
+        for label in value:
+            if label.project != project:
+                raise serializers.ValidationError(
+                    f"لیبل «{label.name}» متعلق به این پروژه نیست."
+                )
+        return value
