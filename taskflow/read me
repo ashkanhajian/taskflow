@@ -1,0 +1,165 @@
+🚀 TaskFlow – Project & Task Management API (Django + DRF)
+
+TaskFlow is a clean, modular backend API for managing projects, members, boards, columns, tasks, comments, and labels — inspired by tools like Trello or Linear.
+It is built using Django 5, Django REST Framework, and JWT Authentication.
+
+✨ Features
+🔐 Authentication
+
+JWT-based authentication (login / signup)
+
+Custom user model
+
+📁 Projects
+
+Create / Update / Delete projects
+
+Project ownership system
+
+Members management with roles:
+
+OWNER
+
+ADMIN
+
+MEMBER
+
+Only allowed users can access or modify project content
+
+👥 Project Members
+
+Invite new members by username
+
+Update member roles
+
+Remove members (except OWNER)
+
+Permission handling for all operations
+
+📊 Boards & Columns
+
+Each project contains multiple boards
+
+Each board contains multiple columns
+
+Columns are orderable (supports drag & drop behavior)
+
+📝 Tasks
+
+Create / update / delete tasks
+
+Assign tasks to users
+
+Priority levels: LOW, MEDIUM, HIGH
+
+Due dates
+
+Completion state
+
+Orderable inside columns (drag & drop support)
+
+Move tasks across columns
+
+💬 Comments
+
+Add comments to tasks
+
+Only authors can edit or delete their own comments
+
+Comment list & detail endpoints
+
+🏷️ Labels / Tags (New Feature)
+
+Create labels for each project
+
+Set label color (HEX value)
+
+Assign multiple labels to a task
+
+Filter tasks by labels
+
+Only project members can manage labels
+
+🔍 Task Filtering & Search
+
+The API supports advanced filtering:
+
+Parameter	Description
+project	Filter by project ID
+column	Filter by column ID
+assignee	Username of task assignee
+priority	low / medium / high
+is_complete	true / false
+q	Search in title & description
+due_before	Filter by deadline upper bound
+due_after	Filter by deadline lower bound
+🧱 Tech Stack
+
+Python 3.12+
+
+Django 5
+
+Django REST Framework
+
+SimpleJWT
+
+SQLite / PostgreSQL
+
+📦 Installation
+git clone https://github.com/ashkanhajian/taskflow
+cd taskflow
+
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
+
+⚙️ Running the Project
+python manage.py migrate
+python manage.py runserver
+
+
+The API will start at:
+
+http://127.0.0.1:8000/
+
+🔑 Authentication Endpoints
+Method	Endpoint	Description
+POST	/api/auth/register/	Register a new user
+POST	/api/auth/login/	Get JWT access token
+POST	/api/auth/refresh/	Refresh JWT token
+📁 Main API Structure
+/api/projects/                         → Create & list projects
+/api/projects/<id>/                    → Retrieve, update, delete project
+/api/projects/<id>/members/            → List & add members
+/api/projects/<id>/members/<pk>/       → Update & delete member
+
+/api/boards/                           → Boards list/create
+/api/columns/                          → Columns list/create
+/api/tasks/                            → Tasks list/create
+
+/api/tasks/<id>/                       → Update / delete task
+/api/tasks/<id>/comments/              → Task comments
+/api/labels/                           → Label list/create
+/api/labels/<id>/                      → Label detail
+
+📘 Project Architecture
+taskflow/
+├── accounts/       → auth, user model, JWT endpoints
+├── projects/       → project + member management
+├── boards/         → boards, columns, tasks, labels, comments
+├── taskflow/       → global settings & routing
+
+🧪 Testing (Optional)
+
+If you want to extend the project:
+
+python manage.py test
+
+🙌 Contribution
+
+Feel free to fork, improve, and submit pull requests.
+
+📄 License
+
+MIT License.
